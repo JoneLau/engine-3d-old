@@ -173,7 +173,7 @@
         cc.math.toDegree(-Math.atan2(this.height, this.dist)), 
         cc.math.toDegree(this.angle), 0);
       /* horribly redundant *
-      camera.lookAt(this.center); // TODO: wtf: y-axis oscillation
+      camera.lookAt(this.center);
       /**/
     }
 
