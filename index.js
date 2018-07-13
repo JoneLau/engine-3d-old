@@ -59,6 +59,7 @@ import * as primitives from './lib/primitives';
 import renderer from './lib/renderer';
 import gfx from './lib/gfx';
 import * as memop from './lib/memop';
+import input from './lib/input';
 
 export default {
   // registry
@@ -130,5 +131,6 @@ export default {
   utils,
   resl,
   path,
+  input,
   async,
 };
