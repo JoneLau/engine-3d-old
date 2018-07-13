@@ -4,7 +4,7 @@
 
   let dobj = {
     baseUrl: '../assets/out',
-    scene: 'scene',
+    scene: 'spec-primitives',
     load: load,
   };
 
