@@ -26,6 +26,7 @@
   <canvas id="canvas" tabindex="-1" class="fit"></canvas>
   <!-- <script src="../node_modules/lstats.js/dist/lstats.min.js"></script> -->
   <script src="../../dist/engine.dev.js"></script>
+  <script src="./loadScene.js"></script>
   <!-- <script src="./dat.gui.js"></script>
       <script src="./shell.js"></script> -->
   <script>
@@ -70,76 +71,7 @@
 
     app.registerClass('Asset', AssetComponent);
 
-    // load level
-    let baseUrl = '../assets/out';
-    cc.resl({
-      manifest: {
-        assetInfos: {
-          type: 'text',
-          parser: JSON.parse,
-          src: `${baseUrl}/assets.json`
-        },
-
-        scene: {
-          type: 'text',
-          parser: JSON.parse,
-          src: `${baseUrl}/spec-script-mesh.json`
-        },
-      },
-
-      onDone(data) {
-        const assetInfos = data.assetInfos;
-        const sceneJson = data.scene;
-
-        let info = null;
-        let uuid = null;
-
-        for (uuid in assetInfos) {
-          info = assetInfos[uuid];
-          for (let item in info.urls) {
-            info.urls[item] = baseUrl + '/' + info.urls[item];
-          }
-
-          app.assets.registerAsset(uuid, info);
-        }
-
-        cc.utils.parseLevel(
-          app,
-          sceneJson,
-          (err, level) => {
-            app.loadLevel(level);
-          }
-        );
-
-        // if (info.urls.mesh) {
-        //   let spec = app.createEntity('spec-test');
-        //   let spec_comp = spec.addComp('Model');
-        //   app.assets.load(uuid, (err, asset) => {
-        //     if (err) {
-        //       console.error(err);
-        //       return;
-        //     }
-        //     spec_comp.mesh = asset;
-
-        //   })
-        //   let material = new cc.Material();
-        //   material.effect = app.assets.get('builtin-effect-unlit');
-        //   material.setProperty('roughness', 0.5);
-        //   material.setProperty('metallic', 1);
-        //   spec_comp.material = material;
-        //   vec3.set(spec.lpos,
-        //     0,//randomRange(-20, 20),
-        //     0,//randomRange(0, 10),
-        //     0//randomRange(0, 20)
-        //   );
-        //   vec3.set(spec.lscale,
-        //     5,//randomRange(1, 5),
-        //     5,//randomRange(1, 5),
-        //     5//randomRange(1, 5)
-        //   );
-        // }
-      }
-    });
+    load('../assets/out', 'spec-script-mesh');
 
     // run app
     app.run();
