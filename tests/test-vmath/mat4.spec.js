@@ -197,8 +197,6 @@ tap.test('mat4', t => {
   });
 
   t.test('multiply', t => {
-    t.equal(mat4.mul, mat4.multiply);
-
     t.test('with a separate output matrix', t => {
       result = mat4.multiply(out, matA, matB);
 
@@ -535,7 +533,7 @@ tap.test('mat4', t => {
       q = quat.fromAxisAngle(q, [0.26726124, 0.534522474, 0.8017837], 0.55);
       mat4.fromRT(out, q, v);
 
-      result = vec3.create();
+      result = vec3.zero();
       mat4.getTranslation(result, out);
 
       t.equal_v3(result, [5, 6, 7]);
@@ -639,7 +637,7 @@ tap.test('mat4', t => {
       result = quat.new(2, 3, 4, 6);
       mat4.getRotation(result, out);
 
-      let outaxis = vec3.create();
+      let outaxis = vec3.zero();
       let outangle = quat.getAxisAngle(outaxis, result);
 
       t.deepApprox(outaxis, testVec);
@@ -717,13 +715,13 @@ tap.test('mat4', t => {
 
       t.equal(result, out);
 
-      result = vec3.transformMat4(vec3.create(), view, out);
+      result = vec3.transformMat4(vec3.zero(), view, out);
       t.equal_v3(result, [0, 0, -1]);
 
-      result = vec3.transformMat4(vec3.create(), up, out);
+      result = vec3.transformMat4(vec3.zero(), up, out);
       t.equal_v3(result, [0, 1, 0]);
 
-      result = vec3.transformMat4(vec3.create(), right, out);
+      result = vec3.transformMat4(vec3.zero(), right, out);
       t.equal_v3(result, [1, 0, 0]);
 
       t.end();
@@ -736,13 +734,13 @@ tap.test('mat4', t => {
         vec3.new(0, 0, -1)
       );
 
-      result = vec3.transformMat4(vec3.create(), vec3.new(0, 2, -1), out);
+      result = vec3.transformMat4(vec3.zero(), vec3.new(0, 2, -1), out);
       t.equal_v3(result, [0, 1, 0]);
 
-      result = vec3.transformMat4(vec3.create(), vec3.new(1, 2, 0), out);
+      result = vec3.transformMat4(vec3.zero(), vec3.new(1, 2, 0), out);
       t.equal_v3(result, [1, 0, 0]);
 
-      result = vec3.transformMat4(vec3.create(), vec3.new(0, 1, 0), out);
+      result = vec3.transformMat4(vec3.zero(), vec3.new(0, 1, 0), out);
       t.equal_v3(result, [0, 0, -1]);
 
       t.end();
@@ -784,15 +782,6 @@ tap.test('mat4', t => {
     result = mat4.frob(matA);
 
     t.equal(result, Math.sqrt(Math.pow(1, 2) + Math.pow(1, 2) + Math.pow(1, 2) + Math.pow(1, 2) + Math.pow(1, 2) + Math.pow(2, 2) + Math.pow(3, 2)));
-
-    t.end();
-  });
-
-  t.test('JSON.stringify', t => {
-    t.equal(
-      JSON.stringify({ matA, matB }),
-      '{"matA":[1,0,0,0,0,1,0,0,0,0,1,0,1,2,3,1],"matB":[1,0,0,0,0,1,0,0,0,0,1,0,4,5,6,1]}'
-    );
 
     t.end();
   });

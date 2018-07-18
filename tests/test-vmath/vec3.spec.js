@@ -187,7 +187,7 @@ tap.test('vec3', t => {
   });
 
   t.test('create', t => {
-    result = vec3.create();
+    result = vec3.zero();
 
     t.equal_v3(result, [0, 0, 0]);
 
@@ -264,8 +264,6 @@ tap.test('vec3', t => {
   });
 
   t.test('subtract', t => {
-    t.equal(vec3.sub, vec3.subtract);
-
     t.test('with a separate output vector', t => {
       result = vec3.subtract(out, vecA, vecB);
 
@@ -301,8 +299,6 @@ tap.test('vec3', t => {
   });
 
   t.test('multiply', t => {
-    t.equal(vec3.mul, vec3.multiply);
-
     t.test('with a separate output vector', t => {
       result = vec3.multiply(out, vecA, vecB);
 
@@ -338,8 +334,6 @@ tap.test('vec3', t => {
   });
 
   t.test('divide', t => {
-    t.equal(vec3.div, vec3.divide);
-
     t.test('with a separate output vector', t => {
       result = vec3.divide(out, vecA, vecB);
 
@@ -601,8 +595,6 @@ tap.test('vec3', t => {
   });
 
   t.test('distance', t => {
-    t.equal(vec3.dist, vec3.distance);
-
     result = vec3.distance(vecA, vecB);
 
     t.approx(result, 5.196152);
@@ -611,8 +603,6 @@ tap.test('vec3', t => {
   });
 
   t.test('squaredDistance', t => {
-    t.equal(vec3.sqrDist, vec3.squaredDistance);
-
     result = vec3.squaredDistance(vecA, vecB);
 
     t.equal(result, 27);
@@ -621,9 +611,7 @@ tap.test('vec3', t => {
   });
 
   t.test('length', t => {
-    t.equal(vec3.len, vec3.length);
-
-    result = vec3.length(vecA);
+    result = vec3.magnitude(vecA);
 
     t.approx(result, 3.741657);
 
@@ -631,9 +619,7 @@ tap.test('vec3', t => {
   });
 
   t.test('squaredLength', t => {
-    t.equal(vec3.sqrLen, vec3.squaredLength);
-
-    result = vec3.squaredLength(vecA);
+    result = vec3.squaredMagnitude(vecA);
 
     t.equal(result, 14);
 
@@ -797,7 +783,7 @@ tap.test('vec3', t => {
     t.test('with no scale', t => {
       result = vec3.random(out);
 
-      t.approx(vec3.length(out), 1.0);
+      t.approx(vec3.magnitude(out), 1.0);
       t.equal(result, out);
 
       t.end();
@@ -806,7 +792,7 @@ tap.test('vec3', t => {
     t.test('with a scale', t => {
       result = vec3.random(out, 5.0);
 
-      t.approx(vec3.length(out), 5.0);
+      t.approx(vec3.magnitude(out), 5.0);
       t.equal(result, out);
 
       t.end();
@@ -969,15 +955,6 @@ tap.test('vec3', t => {
     t.equal(r2, true);
     t.equal_v3(vecA, [0, 1, 2]);
     t.equal_v3(vecB, [0, 1, 2]);
-
-    t.end();
-  });
-
-  t.test('JSON.stringify', t => {
-    t.equal(
-      JSON.stringify({ vecA, vecB }),
-      '{"vecA":[1,2,3],"vecB":[4,5,6]}'
-    );
 
     t.end();
   });
