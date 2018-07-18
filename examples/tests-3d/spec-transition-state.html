@@ -32,6 +32,7 @@
   <canvas id="canvas" tabindex="-1" class="fit"></canvas>
   <script src="../../dist/engine.dev.js"></script>
   <script src="../../node_modules/dat.gui/build/dat.gui.min.js"></script>
+  <script src="./loadScene.js"></script>
   <script>
     // init app
     let app = new cc.App(document.getElementById('canvas'));
@@ -70,109 +71,64 @@
 
     app.resize();
 
-    load();
+    load('../assets/out', 'spec-transition-state',() => {
+      let button = app.activeLevel.getCompsInChildren('Button')[0];
+      let options = {
+        transition: button.transition,
+        normal: button.transitionColors.normal,
+        highlight: button.transitionColors.highlight,
+        pressed: button.transitionColors.pressed,
+        disabled: button.transitionColors.disabled,
+        transitionSpritesNormal: '',
+        transitionSpritesHighlight: '',
+        transitionSpritesPressed: '',
+        transitionSpritesDisabled: '',
+      };
 
-    // load level
-    function load() {
-      let baseUrl = '../assets/out';
+      dgui.add(options, 'transition').onFinishChange(() => {
+        button.transition = options.transition;
+      });
 
-      cc.resl({
-        manifest: {
-          assetInfos: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/assets.json`
-          },
+      dgui.addColor(options, 'normal').onFinishChange(() => {
+        button.transitionColors.normal = [options.normal[0] / 255, options.normal[1] / 255, options.normal[2] / 255, options.normal[3]];
+      });
 
-          scene: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/spec-transition-state.json`
-          },
-        },
+      dgui.addColor(options, 'highlight').onFinishChange(() => {
+        button.transitionColors.highlight = [options.highlight[0] / 255, options.highlight[1] / 255, options.highlight[2] / 255, options.highlight[3]];
+      });
 
-        onDone(data) {
-          const assetInfos = data.assetInfos;
-          const sceneJson = data.scene;
+      dgui.addColor(options, 'pressed').onFinishChange(() => {
+        button.transitionColors.pressed = [options.pressed[0] / 255, options.pressed[1] / 255, options.pressed[2] / 255, options.pressed[3]];
+      });
 
-          let info = null;
-          let uuid = null;
+      dgui.addColor(options, 'disabled').onFinishChange(() => {
+        button.transitionColors.disabled = [options.disabled[0] / 255, options.disabled[1] / 255, options.disabled[2] / 255, options.disabled];
+      });
 
-          for (uuid in assetInfos) {
-            info = assetInfos[uuid];
-            for (let item in info.urls) {
-              info.urls[item] = baseUrl + '/' + info.urls[item];
-            }
-
-            app.assets.registerAsset(uuid, info);
-          }
-
-          cc.utils.parseLevel(
-            app,
-            sceneJson,
-            (err, level) => {
-              app.loadLevel(level);
-              let button = app.activeLevel.getCompsInChildren('Button')[0];
-              let options = {
-                transition: button.transition,
-                normal: button.transitionColors.normal,
-                highlight: button.transitionColors.highlight,
-                pressed: button.transitionColors.pressed,
-                disabled: button.transitionColors.disabled,
-                transitionSpritesNormal: '',
-                transitionSpritesHighlight: '',
-                transitionSpritesPressed: '',
-                transitionSpritesDisabled: '',
-              };
-
-              dgui.add(options, 'transition').onFinishChange(() => {
-                button.transition = options.transition;
-              });
-
-              dgui.addColor(options, 'normal').onFinishChange(() => {
-                button.transitionColors.normal = [options.normal[0] / 255, options.normal[1] / 255, options.normal[2] / 255, options.normal[3]];
-              });
-
-              dgui.addColor(options, 'highlight').onFinishChange(() => {
-                button.transitionColors.highlight = [options.highlight[0] / 255, options.highlight[1] / 255, options.highlight[2] / 255, options.highlight[3]];
-              });
-
-              dgui.addColor(options, 'pressed').onFinishChange(() => {
-                button.transitionColors.pressed = [options.pressed[0] / 255, options.pressed[1] / 255, options.pressed[2] / 255, options.pressed[3]];
-              });
-
-              dgui.addColor(options, 'disabled').onFinishChange(() => {
-                button.transitionColors.disabled = [options.disabled[0] / 255, options.disabled[1] / 255, options.disabled[2] / 255, options.disabled];
-              });
-
-              dgui.add(options, 'transitionSpritesNormal').onFinishChange(() => {
-                if (options.transitionSpritesNormal) {
-                  button.transitionSprites.normal = app.assets.get(options.transitionSpritesNormal);
-                }
-              });
-
-              dgui.add(options, 'transitionSpritesHighlight').onFinishChange(() => {
-                if (options.transitionSpritesHighlight) {
-                  button.transitionSprites.highlight = app.assets.get(options.transitionSpritesHighlight);
-                }
-              });
-
-              dgui.add(options, 'transitionSpritesPressed').onFinishChange(() => {
-                if (options.transitionSpritesPressed) {
-                  button.transitionSprites.pressed = app.assets.get(options.transitionSpritesPressed);
-                }
-              });
-
-              dgui.add(options, 'transitionSpritesDisabled').onFinishChange(() => {
-                if (options.transitionSpritesDisabled) {
-                  button.transitionSprites.disabled = app.assets.get(options.transitionSpritesDisabled);
-                }
-              });
-            }
-          );
+      dgui.add(options, 'transitionSpritesNormal').onFinishChange(() => {
+        if (options.transitionSpritesNormal) {
+          button.transitionSprites.normal = app.assets.get(options.transitionSpritesNormal);
         }
       });
-    }
+
+      dgui.add(options, 'transitionSpritesHighlight').onFinishChange(() => {
+        if (options.transitionSpritesHighlight) {
+          button.transitionSprites.highlight = app.assets.get(options.transitionSpritesHighlight);
+        }
+      });
+
+      dgui.add(options, 'transitionSpritesPressed').onFinishChange(() => {
+        if (options.transitionSpritesPressed) {
+          button.transitionSprites.pressed = app.assets.get(options.transitionSpritesPressed);
+        }
+      });
+
+      dgui.add(options, 'transitionSpritesDisabled').onFinishChange(() => {
+        if (options.transitionSpritesDisabled) {
+          button.transitionSprites.disabled = app.assets.get(options.transitionSpritesDisabled);
+        }
+      });
+    });
 
     // run app
     app.run();

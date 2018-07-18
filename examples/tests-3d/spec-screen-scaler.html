@@ -32,6 +32,7 @@
   <canvas id="canvas" tabindex="-1" class="fit"></canvas>
   <script src="../../dist/engine.dev.js"></script>
   <script src="../../node_modules/dat.gui/build/dat.gui.min.js"></script>
+  <script src="./loadScene.js"></script>
   <script>
     // init app
     let app = new cc.App(document.getElementById('canvas'));
@@ -42,89 +43,43 @@
 
     app.resize();
 
-    load();
+    load('../assets/out', 'spec-screen-scaler',() => {
+      let screensScaler = app.activeLevel.getCompsInChildren('ScreenScaler');
+      for (let i = 0; i < screensScaler.length; i++) {
+        const screenScaler = screensScaler[i];
+        let screen = screenScaler.entity.getComp('Screen');
+        let folder = dgui.addFolder(screenScaler.entity.name);
 
-    // load level
-    function load() {
-      let baseUrl = '../assets/out';
+        let options = {
+          adaptionMode: screenScaler.adaptionMode,
+          match: screenScaler.match,
+          resolutionX: screen.width,
+          resolutionY: screen.height,
+          scaleFactor: screenScaler.scaleFactor,
+        };
 
-      cc.resl({
-        manifest: {
-          assetInfos: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/assets.json`
-          },
+        let lastAdaptionMode = screensScaler.adaptionMode;
+        folder.add(options, 'adaptionMode', ['none', 'match-width-or-height', 'expand', 'shrink']).onFinishChange(() => {
+          screenScaler.adaptionMode = options.adaptionMode;
+        });
 
-          scene: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/spec-screen-scaler.json`
-          },
-        },
+        folder.add(options, 'match').min(0).max(1).step(0.01).onFinishChange(() => {
+          screenScaler.match = options.match;
+        });
 
-        onDone(data) {
-          const assetInfos = data.assetInfos;
-          const sceneJson = data.scene;
+        folder.add(options, 'resolutionX').onFinishChange(() => {
+          screen.width = options.resolutionX;
+        });
 
-          let info = null;
-          let uuid = null;
+        folder.add(options, 'resolutionY').onFinishChange(() => {
+          screen.height = options.resolutionY;
+        });
 
-          for (uuid in assetInfos) {
-            info = assetInfos[uuid];
-            for (let item in info.urls) {
-              info.urls[item] = baseUrl + '/' + info.urls[item];
-            }
-
-            app.assets.registerAsset(uuid, info);
-          }
-
-          cc.utils.parseLevel(
-            app,
-            sceneJson,
-            (err, level) => {
-              app.loadLevel(level);
-
-              let screensScaler = app.activeLevel.getCompsInChildren('ScreenScaler');
-              for (let i = 0; i < screensScaler.length; i++) {
-                const screenScaler = screensScaler[i];
-                let screen = screenScaler.entity.getComp('Screen');
-                let folder = dgui.addFolder(screenScaler.entity.name);
-
-                let options = {
-                  adaptionMode: screenScaler.adaptionMode,
-                  match: screenScaler.match,
-                  resolutionX: screen.width,
-                  resolutionY: screen.height,
-                  scaleFactor: screenScaler.scaleFactor,
-                };
-
-                let lastAdaptionMode = screensScaler.adaptionMode;
-                folder.add(options, 'adaptionMode', ['none', 'match-width-or-height', 'expand', 'shrink']).onFinishChange(() => {
-                  screenScaler.adaptionMode = options.adaptionMode;
-                });
-
-                folder.add(options, 'match').min(0).max(1).step(0.01).onFinishChange(() => {
-                  screenScaler.match = options.match;
-                });
-
-                folder.add(options, 'resolutionX').onFinishChange(() => {
-                  screen.width = options.resolutionX;
-                });
-
-                folder.add(options, 'resolutionY').onFinishChange(() => {
-                  screen.height = options.resolutionY;
-                });
-
-                folder.add(options, 'scaleFactor').onFinishChange(() => {
-                  screenScaler.scaleFactor = options.scaleFactor;
-                });
-              }
-            }
-          );
-        }
-      });
-    }
+        folder.add(options, 'scaleFactor').onFinishChange(() => {
+          screenScaler.scaleFactor = options.scaleFactor;
+        });
+      }
+    });
 
     // run app
     app.run();

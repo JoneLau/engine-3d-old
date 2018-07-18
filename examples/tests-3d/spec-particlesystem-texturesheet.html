@@ -26,75 +26,30 @@
   <canvas id="canvas" tabindex="-1" class="fit"></canvas>
   <script src="../../dist/engine.dev.js"></script>
   <script src="../../node_modules/dat.gui/build/dat.gui.min.js"></script>
+  <script src="./loadScene.js"></script>
   <script>
     // init app
     let app = new cc.App(document.getElementById('canvas'));
     const { vec3 }  = cc.math;
-	
-	let dgui = new dat.GUI({ width: 270 });
+
+	  let dgui = new dat.GUI({ width: 270 });
     dgui.domElement.classList.add('dgui');
 
     app.resize();
 
-    load();
-
-    // load level
-    function load() {
-      let baseUrl = '../assets/out';
-
-      cc.resl({
-        manifest: {
-          assetInfos: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/assets.json`
-          },
-
-          scene: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/spec-particlesystem-texturesheet.json`
-          },
-        },
-
-        onDone(data) {
-          const assetInfos = data.assetInfos;
-          const sceneJson = data.scene;
-
-          let info = null;
-          let uuid = null;
-
-          for (uuid in assetInfos) {
-            info = assetInfos[uuid];
-            for (let item in info.urls) {
-              info.urls[item] = baseUrl + '/' + info.urls[item];
-            }
-
-            app.assets.registerAsset(uuid, info);
-          }
-
-          cc.utils.parseLevel(
-            app,
-            sceneJson,
-            (err, level) => {
-              app.loadLevel(level);
-			  app.debugger.start();
-			  
-			  let dobj = {
-				cycles:3
-			  };
-			  dgui.remember(dobj);
-			  dgui.add(dobj, 'cycles').onFinishChange(() => {
-				let ps = app.activeLevel.getCompsInChildren('ParticleSystem');
-				ps.forEach(function (ele) {
-				  ele.textureAnimationModule.cycleCount = dobj.cycles;
-				});
-			  });
-            }
-          );
-        }
+    load('../assets/out', 'spec-particlesystem-texturesheet',() => {
+      app.debugger.start();
+      let dobj = {
+        cycles:3
+      };
+      dgui.remember(dobj);
+      dgui.add(dobj, 'cycles').onFinishChange(() => {
+        let ps = app.activeLevel.getCompsInChildren('ParticleSystem');
+        ps.forEach(function (ele) {
+          ele.textureAnimationModule.cycleCount = dobj.cycles;
+        });
       });
-    }
+    });
 
     // run app
     app.run();

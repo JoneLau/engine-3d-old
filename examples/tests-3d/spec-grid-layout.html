@@ -32,6 +32,7 @@
   <canvas id="canvas" tabindex="-1" class="fit"></canvas>
   <script src="../../dist/engine.dev.js"></script>
   <script src="../../node_modules/dat.gui/build/dat.gui.min.js"></script>
+  <script src="./loadScene.js"></script>
   <script>
     // init app
     let app = new cc.App(document.getElementById('canvas'));
@@ -42,117 +43,72 @@
 
     app.resize();
 
-    load();
+    load('../assets/out', 'spec-grid-layout',() => {
+      let gridLayout = app.activeLevel.getCompsInChildren('GridLayout')[0];
+      let options = {
+        paddingLeft: gridLayout.paddingLeft,
+        paddingRight: gridLayout.paddingRight,
+        paddingBottom: gridLayout.paddingBottom,
+        paddingTop: gridLayout.paddingTop,
+        spacingX: gridLayout.spacingX,
+        spacingY: gridLayout.spacingY,
+        cellWidth: gridLayout.cellWidth,
+        cellHeight: gridLayout.cellHeight,
+        startCorner: gridLayout.corner,
+        startAxis: gridLayout.axisDirection,
+        childAlignment: gridLayout.childAlign,
+        constraint: gridLayout.constraint,
+        value: gridLayout.constraintCount,
+      };
 
-    // load level
-    function load() {
-      let baseUrl = '../assets/out';
-
-      cc.resl({
-        manifest: {
-          assetInfos: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/assets.json`
-          },
-
-          scene: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/spec-grid-layout.json`
-          },
-        },
-
-        onDone(data) {
-          const assetInfos = data.assetInfos;
-          const sceneJson = data.scene;
-
-          let info = null;
-          let uuid = null;
-
-          for (uuid in assetInfos) {
-            info = assetInfos[uuid];
-            for (let item in info.urls) {
-              info.urls[item] = baseUrl + '/' + info.urls[item];
-            }
-
-            app.assets.registerAsset(uuid, info);
-          }
-
-          cc.utils.parseLevel(
-            app,
-            sceneJson,
-            (err, level) => {
-              app.loadLevel(level);
-              let gridLayout = app.activeLevel.getCompsInChildren('GridLayout')[0];
-              let options = {
-                paddingLeft: gridLayout.paddingLeft,
-                paddingRight: gridLayout.paddingRight,
-                paddingBottom: gridLayout.paddingBottom,
-                paddingTop: gridLayout.paddingTop,
-                spacingX: gridLayout.spacingX,
-                spacingY: gridLayout.spacingY,
-                cellWidth: gridLayout.cellWidth,
-                cellHeight: gridLayout.cellHeight,
-                startCorner: gridLayout.corner,
-                startAxis: gridLayout.axisDirection,
-                childAlignment: gridLayout.childAlign,
-                constraint: gridLayout.constraint,
-                value: gridLayout.constraintCount,
-              };
-
-              dgui.add(options, 'paddingLeft').onFinishChange(() => {
-                gridLayout.paddingLeft = options.paddingLeft;
-              });
-
-              dgui.add(options, 'paddingRight').onFinishChange(() => {
-                gridLayout.paddingRight = options.paddingRight;
-              });
-
-              dgui.add(options, 'paddingBottom').onFinishChange(() => {
-                gridLayout.paddingBottom = options.paddingBottom;
-              });
-
-              dgui.add(options, 'paddingTop').onFinishChange(() => {
-                gridLayout.paddingTop = options.paddingTop;
-              });
-
-              dgui.add(options, 'spacingX').onFinishChange(() => {
-                gridLayout.spacingX = options.spacingX;
-              });
-
-              dgui.add(options, 'spacingY').onFinishChange(() => {
-                gridLayout.spacingY = options.spacingY;
-              });
-
-              dgui.add(options, 'cellWidth').onFinishChange(() => {
-                gridLayout.cellWidth = options.cellWidth;
-              });
-
-              dgui.add(options, 'cellHeight').onFinishChange(() => {
-                gridLayout.cellHeight = options.cellHeight;
-              });
-
-              dgui.add(options, 'startCorner').onFinishChange(() => {
-                gridLayout.corner = options.startCorner;
-              });
-
-              dgui.add(options, 'childAlignment').onFinishChange(() => {
-                gridLayout.childAlign = options.childAlignment;
-              });
-
-              dgui.add(options, 'constraint').onFinishChange(() => {
-                gridLayout.constraint = options.constraint;
-              });
-
-              dgui.add(options, 'value').onFinishChange(() => {
-                gridLayout.constraintCount = options.value;
-              });
-            }
-          );
-        }
+      dgui.add(options, 'paddingLeft').onFinishChange(() => {
+        gridLayout.paddingLeft = options.paddingLeft;
       });
-    }
+
+      dgui.add(options, 'paddingRight').onFinishChange(() => {
+        gridLayout.paddingRight = options.paddingRight;
+      });
+
+      dgui.add(options, 'paddingBottom').onFinishChange(() => {
+        gridLayout.paddingBottom = options.paddingBottom;
+      });
+
+      dgui.add(options, 'paddingTop').onFinishChange(() => {
+        gridLayout.paddingTop = options.paddingTop;
+      });
+
+      dgui.add(options, 'spacingX').onFinishChange(() => {
+        gridLayout.spacingX = options.spacingX;
+      });
+
+      dgui.add(options, 'spacingY').onFinishChange(() => {
+        gridLayout.spacingY = options.spacingY;
+      });
+
+      dgui.add(options, 'cellWidth').onFinishChange(() => {
+        gridLayout.cellWidth = options.cellWidth;
+      });
+
+      dgui.add(options, 'cellHeight').onFinishChange(() => {
+        gridLayout.cellHeight = options.cellHeight;
+      });
+
+      dgui.add(options, 'startCorner').onFinishChange(() => {
+        gridLayout.corner = options.startCorner;
+      });
+
+      dgui.add(options, 'childAlignment').onFinishChange(() => {
+        gridLayout.childAlign = options.childAlignment;
+      });
+
+      dgui.add(options, 'constraint').onFinishChange(() => {
+        gridLayout.constraint = options.constraint;
+      });
+
+      dgui.add(options, 'value').onFinishChange(() => {
+        gridLayout.constraintCount = options.value;
+      });
+    });
 
     // run app
     app.run();
