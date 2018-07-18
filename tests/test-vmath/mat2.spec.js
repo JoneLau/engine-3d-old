@@ -128,8 +128,6 @@ tap.test('mat2', t => {
   });
 
   t.test('multiply', t => {
-    t.equal(mat2.mul, mat2.multiply);
-
     t.test('with a separate output matrix', t => {
       result = mat2.multiply(out, matA, matB);
 
@@ -188,7 +186,7 @@ tap.test('mat2', t => {
   });
 
   t.test('scale', t => {
-    let vecA = vec2.create();
+    let vecA = vec2.zero();
     t.beforeEach(done => {
       vec2.set(vecA, 2, 3);
       done();
@@ -294,8 +292,6 @@ tap.test('mat2', t => {
   });
 
   t.test('subtract', t => {
-    t.equal(mat2.sub, mat2.subtract);
-
     t.test('with a separate output matrix', t => {
       result = mat2.subtract(out, matA, matB);
 
@@ -434,15 +430,6 @@ tap.test('mat2', t => {
     t.equal(r2, true);
     t.equal_m2(matA, [0, 1, 2, 3]);
     t.equal_m2(matB, [0, 1, 2, 3]);
-
-    t.end();
-  });
-
-  t.test('JSON.stringify', t => {
-    t.equal(
-      JSON.stringify({ matA, matB }),
-      '{"matA":[1,2,3,4],"matB":[5,6,7,8]}'
-    );
 
     t.end();
   });

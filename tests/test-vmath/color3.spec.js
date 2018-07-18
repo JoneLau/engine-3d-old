@@ -99,8 +99,6 @@ tap.test('color3', t => {
   });
 
   t.test('subtract', t => {
-    t.equal(color3.sub, color3.subtract);
-
     t.test('with a separate output color', t => {
       result = color3.subtract(out, colorA, colorB);
 
@@ -136,8 +134,6 @@ tap.test('color3', t => {
   });
 
   t.test('multiply', t => {
-    t.equal(color3.mul, color3.multiply);
-
     t.test('with a separate output color', t => {
       result = color3.multiply(out, colorA, colorB);
 
@@ -173,8 +169,6 @@ tap.test('color3', t => {
   });
 
   t.test('divide', t => {
-    t.equal(color3.div, color3.divide);
-
     t.test('with a separate output color', t => {
       result = color3.divide(out, colorA, colorB);
 
@@ -322,15 +316,6 @@ tap.test('color3', t => {
     color3.set(colorA, 0.5, 1, 0.5);
 
     t.equal(color3.hex(colorA), 0x7fff7f);
-
-    t.end();
-  });
-
-  t.test('JSON.stringify', t => {
-    t.equal(
-      JSON.stringify({ colorA, colorB }),
-      '{"colorA":[1,2,3],"colorB":[4,5,6]}'
-    );
 
     t.end();
   });
