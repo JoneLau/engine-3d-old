@@ -4,9 +4,9 @@
 
   let dobj = {
     baseUrl: '../assets/out',
-    scene: 'spec-zed',
-    entityPath: 'zed',
-    animName: 'spell1',
+    scene: 'spec-skeleton',
+    entityPath: 'skeleton',
+    animName: 'Idle',
     load: load,
     play: play,
   };
