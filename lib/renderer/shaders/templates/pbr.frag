@@ -11,6 +11,7 @@
 #include <common.frag>
 #include <gamma-correction.frag>
 #include <pbr-lighting.frag>
+#include <unpack.frag>
 
 #if USE_SHADOW_MAP
   #include <packing.frag>
@@ -157,18 +158,16 @@ vec3 brdf(LightInfo lightInfo, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metal
   return (kD * albedo / PI + specular) * lightInfo.radiance * NdotL;
 }
 
-
 void main() {
   float opacity = 1.0;
 
   #if USE_ALBEDO_TEXTURE
-    vec4 baseColor = gammaToLinearSpaceRGBA(albedo * texture2D(albedo_texture, uv0).rgba);
-    vec3 albedo    = baseColor.rgb;
+    vec4 baseColor = albedo * gammaToLinearSpaceRGBA(texture2D(albedo_texture, uv0));
+    vec3 albedo = baseColor.rgb;
     opacity = baseColor.a;
   #else
-    vec4 baseColor = gammaToLinearSpaceRGBA(albedo);
-    vec3 albedo    = baseColor.rgb;
-    opacity = baseColor.a;
+    opacity = albedo.a;
+    vec3 albedo = albedo.rgb;
   #endif
 
   #if USE_ALPHA_TEST
@@ -248,14 +247,26 @@ void main() {
     vec3 kS = F;
     vec3 kD = vec3(1.0) - kS;
     kD *= 1.0 - metallic;
-    vec3 diffuseEnv = textureCube(diffuseEnvTexture, N).rgb;
+    #if USE_RGBE_HDR_IBL_DIFFUSE
+      vec3 diffuseEnv = unpackRGBE(textureCube(diffuseEnvTexture, N));
+    #else
+      vec3 diffuseEnv = textureCube(diffuseEnvTexture, N).rgb;
+    #endif
     vec3 diffuse = diffuseEnv * albedo;
     // sample both the specularEnvTexture and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
     vec3 R = reflect(-V, N);
     #if USE_TEX_LOD
-      vec3 specularEnv = textureCubeLodEXT(specularEnvTexture, R, roughness * maxReflectionLod).rgb;
+      #if USE_RGBE_HDR_IBL_SPECULAR
+        vec3 specularEnv = unpackRGBE(textureCubeLodEXT(specularEnvTexture, R, roughness * maxReflectionLod));
+      #else
+        vec3 specularEnv = textureCubeLodEXT(specularEnvTexture, R, roughness * maxReflectionLod).rgb;
+      #endif
     #else
-      vec3 specularEnv = textureCube(specularEnvTexture, R).rgb;
+      #if USE_RGBE_HDR_IBL_SPECULAR
+        vec3 specularEnv = unpackRGBE(textureCube(specularEnvTexture, R));
+      #else
+        vec3 specularEnv = textureCube(specularEnvTexture, R).rgb;
+      #endif
     #endif
     vec2 brdf  = texture2D(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
     vec3 specular = specularEnv * (F * brdf.x + brdf.y);

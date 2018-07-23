@@ -125,6 +125,12 @@
   camera.lookAt(vec3.new(5, 4, 3));
   app._forward.accurateFrustumCulling = dobj.accurateFrustumCulling;
 
+  // adjust canvas ratio
+  let h = app._device._gl.canvas.width / 16 * 9;
+  if (app._device._gl.canvas.height > h) app._device._gl.canvas.height = h;
+  else app._device._gl.canvas.width = app._device._gl.canvas.height / 9 * 16;
+  let w = app._device._gl.canvas.width; h = app._device._gl.canvas.height;
+
   // warp the frustum boundary hint
   let mulPos = (function() {
     return function(m, a, i) {
@@ -145,8 +151,7 @@
       a[i+2] = x * m.m02 + y * m.m05 + z * m.m08;
     };
   })();
-  app._device._gl.canvas.width = app._device._gl.canvas.height / 9 * 16;
-  cam._camera.extractView(view, app._device._gl.canvas.width, app._device._gl.canvas.height);
+  cam._camera.extractView(view, w, h);
   let frustum = geometries[0].getComp('Model');
   let mesh = manifest.geometries.meshes[0];
   for (let i = 0; i < mesh.positions.length; i += 3) {
@@ -174,7 +179,6 @@
     };
   }
   // on-screen text
-  let w = app._device._gl.canvas.width, h = app._device._gl.canvas.height;
   let screen = app.createEntity('screen');
   screen.addComp('Screen');
   let entWidget = app.createEntity('widget');

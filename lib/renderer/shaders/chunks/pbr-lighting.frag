@@ -51,7 +51,7 @@ LightInfo computePointLighting(
 ) {
   LightInfo ret;
   vec3 lightDir = lightPosition - positionW;
-  float attenuation = max(0., 1.0 - length(lightDir) / lightRange);
+  float attenuation = max(0.0, 1.0 - length(lightDir) / lightRange);
   ret.lightDir = normalize(lightDir);
   ret.radiance = lightColor * attenuation;
 

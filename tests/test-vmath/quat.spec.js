@@ -7,7 +7,7 @@ tap.test('quat', t => {
   let quatB = quat.create();
   let result = quat.create();
   let id = quat.create();
-  let vec = vec3.create();
+  let vec = vec3.zero();
   let deg90 = Math.PI / 2;
   let deg45 = Math.PI / 4;
   let deg30 = Math.PI / 6;
@@ -150,7 +150,7 @@ tap.test('quat', t => {
       result = quat.fromMat3(out, matr);
 
       t.equal(result, out);
-      result = vec3.transformQuat(vec3.create(), vec3.new(0, 1, 0), out);
+      result = vec3.transformQuat(vec3.zero(), vec3.new(0, 1, 0), out);
 
       t.equal_v3(result, [0, 0, -1]);
 
@@ -175,8 +175,8 @@ tap.test('quat', t => {
 
       t.equal(result, out);
       t.deepApprox(
-        vec3.transformQuat(vec3.create(), vec3.new(3, 2, -1), quat.normalize(out, out)),
-        vec3.transformMat3(vec3.create(), vec3.new(3, 2, -1), matr)
+        vec3.transformQuat(vec3.zero(), vec3.new(3, 2, -1), quat.normalize(out, out)),
+        vec3.transformMat3(vec3.zero(), vec3.new(3, 2, -1), matr)
       );
 
       t.end();
@@ -200,8 +200,8 @@ tap.test('quat', t => {
 
       t.equal(result, out);
       t.deepApprox(
-        vec3.transformQuat(vec3.create(), vec3.new(3, 2, -1), quat.normalize(out, out)),
-        vec3.transformMat3(vec3.create(), vec3.new(3, 2, -1), matr)
+        vec3.transformQuat(vec3.zero(), vec3.new(3, 2, -1), quat.normalize(out, out)),
+        vec3.transformMat3(vec3.zero(), vec3.new(3, 2, -1), matr)
       );
 
       t.end();
@@ -225,8 +225,8 @@ tap.test('quat', t => {
 
       t.equal(result, out);
       t.deepApprox(
-        vec3.transformQuat(vec3.create(), vec3.new(3, 2, -1), quat.normalize(out, out)),
-        vec3.transformMat3(vec3.create(), vec3.new(3, 2, -1), matr)
+        vec3.transformQuat(vec3.zero(), vec3.new(3, 2, -1), quat.normalize(out, out)),
+        vec3.transformMat3(vec3.zero(), vec3.new(3, 2, -1), matr)
       );
 
       t.end();
@@ -249,7 +249,7 @@ tap.test('quat', t => {
 
       t.equal(result, out);
       t.equal_v3(
-        vec3.transformQuat(vec3.create(), vec3.new(0, 1, 0), out),
+        vec3.transformQuat(vec3.zero(), vec3.new(0, 1, 0), out),
         [0, 0, -1]
       );
 
@@ -317,7 +317,7 @@ tap.test('quat', t => {
   t.test('rotationTo', t => {
     let r;
     t.beforeEach(done => {
-      r = vec3.create();
+      r = vec3.zero();
       done();
     });
 
@@ -533,8 +533,6 @@ tap.test('quat', t => {
   // });
 
   t.test('multiply', t => {
-    t.equal(quat.mul, quat.multiply);
-
     t.test('with a separate output quaternion', t => {
       result = quat.multiply(out, quatA, quatB);
 
@@ -593,9 +591,7 @@ tap.test('quat', t => {
   });
 
   t.test('length', t => {
-    t.equal(quat.len, quat.length);
-
-    result = quat.length(quatA);
+    result = quat.magnitude(quatA);
 
     t.approx(result, 5.477225);
 
@@ -603,9 +599,7 @@ tap.test('quat', t => {
   });
 
   t.test('squaredLength', t => {
-    t.equal(quat.sqrLen, quat.squaredLength);
-
-    result = quat.squaredLength(quatA);
+    result = quat.squaredMagnitude(quatA);
 
     t.equal(result, 30);
 
@@ -795,15 +789,6 @@ tap.test('quat', t => {
     t.equal(r2, true);
     t.equal_v4(quatA, [0, 1, 2, 3]);
     t.equal_v4(quatB, [0, 1, 2, 3]);
-
-    t.end();
-  });
-
-  t.test('JSON.stringify', t => {
-    t.equal(
-      JSON.stringify({ quatA, quatB }),
-      '{"quatA":[1,2,3,4],"quatB":[5,6,7,8]}'
-    );
 
     t.end();
   });

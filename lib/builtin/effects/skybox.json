@@ -21,5 +21,10 @@
 
   "properties": {},
 
-  "defines": []
+  "defines": [
+    {
+      "name": "USE_RGBE_HDR",
+      "value": false
+    }
+  ]
 }

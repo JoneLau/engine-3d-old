@@ -14,7 +14,7 @@
   ent.setParent(screen);
   let sprite = ent.addComp('Image');
   sprite.color = color4.create();
-  sprite.setSize(350, 80);
+  sprite.setSize(170, 40);
   let entEditor = ent.addComp('EditBox');
   entEditor.background = ent;
   entEditor.transition = 'color';
@@ -24,16 +24,26 @@
   entEditor.transitionColors.disabled = color4.new(0.2, 0.2, 0.2, 1);
   entEditor._updateState();
 
+  let placeHolder = app.createEntity('place');
+  placeHolder.setParent(ent);
+  let placeHolderComp = placeHolder.addComp('Text');
+  placeHolderComp.color = color4.new(0, 0, 0, 0.5);
+  placeHolderComp.setSize(-10, -10);
+  placeHolderComp.setAnchors(0, 0, 1, 1);
+  placeHolderComp.align = 'middle-left';
+  placeHolderComp.text = 'Enter text';
+
   let input = app.createEntity('input');
   input.setParent(ent);
   let inputTextComp = input.addComp('Text');
   inputTextComp.color = color4.new(0, 0, 0, 1);
   inputTextComp.setSize(-10, -10);
   inputTextComp.setAnchors(0, 0, 1, 1);
+  inputTextComp.align = 'middle-left';
 
-  entEditor.defaultText = 'please enter here';
   entEditor.textEnt = input;
-  // entEditor._contentType = 'password';
-  // entEditor._lineType = 'multi-line';
+  entEditor.placeHolder = placeHolder;
+  entEditor.contentType = 'name';
+  entEditor.lineType = 'multi-line';
   entEditor.returnKeyType = 'submit';
 })();

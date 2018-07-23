@@ -190,6 +190,14 @@
     {
       "name": "NUM_SHADOW_LIGHTS",
       "value": 0
+    },
+    {
+      "name": "USE_RGBE_HDR_IBL_SPECULAR",
+      "value": false
+    },
+    {
+      "name": "USE_RGBE_HDR_IBL_DIFFUSE",
+      "value": false
     }
   ],
 

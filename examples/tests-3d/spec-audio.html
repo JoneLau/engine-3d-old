@@ -25,6 +25,7 @@
 <body class="fit">
   <canvas id="canvas" tabindex="-1" class="fit"></canvas>
   <script src="../../dist/engine.dev.js"></script>
+  <script src="./loadScene.js"></script>
   <script>
     // init app
     let app = new cc.App(document.getElementById('canvas'));
@@ -32,67 +33,22 @@
 
     app.resize();
 
-    load();
+    load('../assets/out', 'spec-audio',() => {
+      let ent = app.find('1');
+      let as = ent.getComp('AudioSource');
+      // as.play(); // playOnAwake from schema
+      setTimeout(function(){ as.volume = 0.5; }, 10000);
+      setTimeout(function(){ as.volume = 0.1; }, 17000);
+      setTimeout(function(){ as.stop(); }, 24000);
 
-    // load level
-    function load() {
-      let baseUrl = '../assets/out';
-
-      cc.resl({
-        manifest: {
-          assetInfos: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/assets.json`
-          },
-
-          scene: {
-            type: 'text',
-            parser: JSON.parse,
-            src: `${baseUrl}/spec-audio.json`
-          },
-        },
-
-        onDone(data) {
-          const assetInfos = data.assetInfos;
-          const sceneJson = data.scene;
-
-          let info = null;
-          let uuid = null;
-
-          for (uuid in assetInfos) {
-            info = assetInfos[uuid];
-            for (let item in info.urls) {
-              info.urls[item] = baseUrl + '/' + info.urls[item];
-            }
-
-            app.assets.registerAsset(uuid, info);
-          }
-
-          cc.utils.parseLevel(
-            app,
-            sceneJson,
-            (err, level) => {
-              app.loadLevel(level);
-              let ent = app.find('1');
-              let as = ent.getComp('AudioSource');
-              // as.play(); // playOnAwake from schema
-              setTimeout(function(){ as.volume = 0.5; }, 10000);
-              setTimeout(function(){ as.volume = 0.1; }, 17000);
-              setTimeout(function(){ as.stop(); }, 24000);
-
-              let ent2 = app.find('2');
-              let as2 = ent2.getComp('AudioSource');
-              // as2.loop = true; // loop from schema
-              as2.volume = 0.5;
-              setTimeout(function(){ as2.play(); }, 5000);
-              setTimeout(function(){ as2.volume = 0.75; }, 10000);
-              setTimeout(function(){ as2.volume = 1; }, 20000);
-            }
-          );
-        }
-      });
-    }
+      let ent2 = app.find('2');
+      let as2 = ent2.getComp('AudioSource');
+      // as2.loop = true; // loop from schema
+      as2.volume = 0.5;
+      setTimeout(function(){ as2.play(); }, 5000);
+      setTimeout(function(){ as2.volume = 0.75; }, 10000);
+      setTimeout(function(){ as2.volume = 1; }, 20000);
+    });
 
     // run app
     app.run();

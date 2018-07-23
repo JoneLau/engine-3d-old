@@ -116,8 +116,6 @@ tap.test('mat23', t => {
   });
 
   t.test('multiply', t => {
-    t.equal(mat23.mul, mat23.multiply);
-
     t.test('with a separate output matrix', t => {
       result = mat23.multiply(out, matA, matB);
 
@@ -176,7 +174,7 @@ tap.test('mat23', t => {
   });
 
   t.test('scale', t => {
-    let vecA = vec2.create();
+    let vecA = vec2.zero();
     t.beforeEach(done => {
       vec2.set(vecA, 2, 3);
       done();
@@ -205,7 +203,7 @@ tap.test('mat23', t => {
   });
 
   t.test('translate', t => {
-    let vecA = vec2.create();
+    let vecA = vec2.zero();
     t.beforeEach(done => {
       vec2.set(vecA, 2, 3);
       done();
@@ -234,7 +232,7 @@ tap.test('mat23', t => {
   });
 
   t.test('fromRTS', t => {
-    let vecA = vec2.create();
+    let vecA = vec2.zero();
     t.beforeEach(done => {
       vec2.set(vecA, 2, 3);
       done();
@@ -310,8 +308,6 @@ tap.test('mat23', t => {
   });
 
   t.test('subtract', t => {
-    t.equal(mat23.sub, mat23.subtract);
-
     t.test('with a separate output matrix', t => {
       result = mat23.subtract(out, matA, matB);
 
@@ -450,15 +446,6 @@ tap.test('mat23', t => {
     t.equal(r2, true);
     t.equal_m23(matA, [0, 1, 2, 3, 4, 5]);
     t.equal_m23(matB, [0, 1, 2, 3, 4, 5]);
-
-    t.end();
-  });
-
-  t.test('JSON.stringify', t => {
-    t.equal(
-      JSON.stringify({ matA, matB }),
-      '{"matA":[1,2,3,4,5,6],"matB":[7,8,9,10,11,12]}'
-    );
 
     t.end();
   });

@@ -75,11 +75,11 @@ tap.test('mat3', t => {
 
     t.equal(result, out);
     t.deepApprox(
-      vec3.transformMat3(vec3.create(), vec3.new(0, 0, -1), out),
-      vec3.transformQuat(vec3.create(), vec3.new(0, 0, -1), q)
+      vec3.transformMat3(vec3.zero(), vec3.new(0, 0, -1), out),
+      vec3.transformQuat(vec3.zero(), vec3.new(0, 0, -1), q)
     );
     t.equal_v3(
-      vec3.transformMat3(vec3.create(), vec3.new(0, 0, -1), out),
+      vec3.transformMat3(vec3.zero(), vec3.new(0, 0, -1), out),
       [1, 0, 0]
     );
 
@@ -281,8 +281,6 @@ tap.test('mat3', t => {
   });
 
   t.test('multiply', t => {
-    t.equal(mat3.mul, mat3.multiply);
-
     t.test('with a separate output matrix', t => {
       result = mat3.multiply(out, matA, matB);
 
@@ -417,8 +415,6 @@ tap.test('mat3', t => {
 
       done();
     });
-
-    t.equal(mat3.sub, mat3.subtract);
 
     t.test('with a separate output matrix', t => {
       result = mat3.subtract(out, matA, matB);
@@ -571,15 +567,6 @@ tap.test('mat3', t => {
     t.equal(r2, true);
     t.equal_m3(matA, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
     t.equal_m3(matB, [0, 1, 2, 3, 4, 5, 6, 7, 8]);
-
-    t.end();
-  });
-
-  t.test('JSON.stringify', t => {
-    t.equal(
-      JSON.stringify({ matA, matB }),
-      '{"matA":[1,0,0,0,1,0,1,2,1],"matB":[1,0,0,0,1,0,3,4,1]}'
-    );
 
     t.end();
   });

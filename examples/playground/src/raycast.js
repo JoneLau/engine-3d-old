@@ -128,15 +128,12 @@
       if (this.dist > 3)
       if (this.input.keypress('w')) this.dist -= 0.1;
       if (this.input.keypress('s')) this.dist += 0.1;
-      if (this.input.keypress('d')) this.angle -= 0.025;
-      if (this.input.keypress('a')) this.angle += 0.02;
-      if (this.input.keypress('e')) this.height += 0.1;
+      if (this.input.keypress('a')) this.angle -= 0.02;
+      if (this.input.keypress('d')) this.angle += 0.025;
       if (this.input.keypress('q')) this.height -= 0.1;
+      if (this.input.keypress('e')) this.height += 0.1;
       if (!this.input.keypress('Shift')) this.angle += 0.005;
-      vec3.set(camera.lpos, this.center.x + Math.cos(this.angle) * this.dist, 
-        this.center.y + this.height, 
-        this.center.z + Math.sin(this.angle) * this.dist);
-      camera.lookAt(this.center);
+      this.updateCamera();
 
       // reset materials
       for (let i = 0; i < geometries.length; i++) {
@@ -156,6 +153,32 @@
       if (app.scene.raycast(this.hitInfo, ray)) {
         this.hitInfo.entity.getComp('Model').material = materials[0];
       }
+    }
+
+    updateCamera() {
+      vec3.set(camera.lpos, this.center.x + Math.sin(this.angle) * this.dist, 
+        this.center.y + this.height, 
+        this.center.z + Math.cos(this.angle) * this.dist);
+      /* optimal */
+      let len = this.len(this.height, this.dist);
+      let sx = -this.height / len, cx = this.dist / len;
+      sx = sx / (1 + cx); cx = Math.sqrt((1 + cx) / 2); sx *= cx; // half angle
+      let sy = Math.sin(this.angle * 0.5), cy = Math.cos(this.angle * 0.5);
+      camera.lrot.x = sx * cy;
+      camera.lrot.y = cx * sy;
+      camera.lrot.z = - sx * sy;
+      camera.lrot.w = cx * cy;
+      /* simple *
+      cc.math.quat.fromEuler(camera.lrot, 
+        cc.math.toDegree(-Math.atan2(this.height, this.dist)), 
+        cc.math.toDegree(this.angle), 0);
+      /* horribly redundant *
+      camera.lookAt(this.center);
+      /**/
+    }
+
+    len(x, y) {
+      return Math.sqrt(x * x + y * y);
     }
   }
   app.registerClass('RaycastTest', RaycastTest);

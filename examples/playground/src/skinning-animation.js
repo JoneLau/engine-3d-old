@@ -4,9 +4,9 @@
 
   let dobj = {
     baseUrl: '../assets/out',
-    scene: 'spec-zed',
-    entityPath: 'zed',
-    animName: 'spell1',
+    scene: 'spec-skeleton',
+    entityPath: 'skeleton',
+    animName: 'Idle',
     load: load,
     play: play,
   };
@@ -30,39 +30,23 @@
   function load() {
     resl({
       manifest: {
-        assetInfos: {
+        gameInfo: {
           type: 'text',
           parser: JSON.parse,
-          src: `${dobj.baseUrl}/assets.json`
-        },
-
-        scene: {
-          type: 'text',
-          parser: JSON.parse,
-          src: `${dobj.baseUrl}/${dobj.scene}.json`
-        },
+          src: `${dobj.baseUrl}/game.json`
+        }
       },
 
       onDone(data) {
-        const sceneJson = data.scene;
-        const assetInfos = data.assetInfos;
-
-        for (let uuid in assetInfos) {
-          let info = assetInfos[uuid];
-          for (let item in info.urls) {
-            info.urls[item] = path.join(dobj.baseUrl, info.urls[item]);
-          }
-
-          app.assets.registerAsset(uuid, info);
-        }
-
-        cc.utils.parseLevel(
-          app,
-          sceneJson,
-          (err, level) => {
+        app.loadGameConfig(`${dobj.baseUrl}`, data.gameInfo);
+        app.assets.loadLevel(`${dobj.scene}`, (err, level) => {
+          if (err) {
+            console.error(err);
+          } else {
             app.loadLevel(level);
           }
-        );
+        });
+
       }
     });
   }

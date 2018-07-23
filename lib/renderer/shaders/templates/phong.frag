@@ -78,13 +78,12 @@ phongMaterial getPhongMaterial() {
   phongMaterial result;
 
   #if USE_DIFFUSE_TEXTURE
-    vec4 baseColor = gammaToLinearSpaceRGBA(diffuseColor * texture2D(diffuse_texture, uv0).rgba);
+    vec4 baseColor = diffuseColor * gammaToLinearSpaceRGBA(texture2D(diffuse_texture, uv0));
     result.diffuse = baseColor.rgb;
     result.opacity = baseColor.a;
   #else
-    vec4 baseColor = gammaToLinearSpaceRGBA(diffuseColor);
-    result.diffuse = baseColor.rgb;
-    result.opacity = baseColor.a;
+    result.diffuse = diffuseColor.rgb;
+    result.opacity = diffuseColor.a;
   #endif
 
   #if USE_EMISSIVE
