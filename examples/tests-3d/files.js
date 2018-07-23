@@ -29,6 +29,7 @@ var files = {
 		"spec-script-comps",
 		"spec-script-materials",
 		"spec-script-mesh",
+		"spec-script-prefab",
 		"spec-script-refs",
 		"spec-script-simple",
 		"spec-script-sprite"

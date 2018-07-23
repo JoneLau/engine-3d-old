@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>spec-button</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <style>
+    body {
+      background-color: #333;
+      margin: 0px;
+      overflow: hidden;
+    }
+
+    .fit {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  </style>
+</head>
+
+<body class="fit">
+  <canvas id="canvas" tabindex="-1" class="fit"></canvas>
+  <script src="../../dist/engine.dev.js"></script>
+  <script src="./loadScene.js"></script>
+  <script>
+    // init app
+    let app = new cc.App(document.getElementById('canvas'));
+    const { vec3 } = cc.math;
+
+    app.resize();
+
+    class AssetComponent extends cc.ScriptComponent {
+      construct() {
+        this._skeleton = null;
+      }
+
+      awake() {
+        this._skeleton = this._test.instantiate();
+        this._skeleton.lscale = vec3.new(5, 5, 5);
+        // todo: component active activation
+        this._skeleton.active = false;
+        this._skeleton.active = true;
+        let animComp = this._skeleton.getComp('Animation');
+        animComp.play('Attack');
+      }
+    }
+
+    AssetComponent.schema = {
+      test: {
+        type: 'asset',
+        default: null,
+      }
+    }
+
+    app.registerClass('Asset', AssetComponent);
+
+    load('../assets/out', 'spec-script-prefab');
+
+    // run app
+    app.run();
+  </script>
+</body>
+
+</html>
